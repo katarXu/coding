@@ -88,6 +88,12 @@ int maxProfit(int k, vector<int>& prices) {
 
 考虑第一种情况，当我们枚举斜率$c$时，与函数的切线记为$f-g_k=c(x-k)$，与纵轴的交点即为$g_k-ck$，可以视为每笔交易需要$c$的手续费时的最大利润，且切线时取到最大值，由于函数图像是上凹的，故$c$越小，取到的$k$越大，于是我们可以采用二分斜率$c$的方法，找到对应的$k$
 
+![188-3.png](https://pic.leetcode-cn.com/1608989616-qdGORt-188-3.png)
+
+此时是一种特殊情况，我们只能求出其中一个$k$值，如果我们求出绿色点的$k$值，则不会得到红点的$k$值，但利用$res=g_k-k*c$，结果就统一了，故我们处理时要尽可能使$k$的值大
+
+
+
 考虑这个子问题**每笔交易需要$c$的手续费时的最大利润**
 
 有前面的基础，我们很容易列出递推关系：
@@ -127,7 +133,7 @@ int maxProfit(vector<int>& prices, int fee) {
 }
 ```
 
-故总代码如下：
+故总代码如下，时间复杂度为$o(n \log (\max prices[i]))$
 
 ```c++
 int maxProfit(int k, vector<int>& prices) {
@@ -141,6 +147,7 @@ int maxProfit(int k, vector<int>& prices) {
         int buyCnt = 0, sellCnt = 0;
         
     	for (int i = 1; i < n; ++i) {
+            //这里等号时一定要处理，使sellCnt尽可能大
     	    if(buy <= sell - prices[i]){
                 buyCnt = sellCnt;
                 buy = sell - prices[i];
@@ -152,6 +159,7 @@ int maxProfit(int k, vector<int>& prices) {
     	}
         if(sellCnt >= k){
             res = sell + fee * k;
+            if(sellCnt == k) return res;
             left = fee + 1;
         }
         else
