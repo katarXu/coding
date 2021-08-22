@@ -92,4 +92,34 @@ Node* flattenChild(Node *head) {
 
 
 
-若当前元素大于插入值，则向后遍历
+先确定真正的开始结点，若当前元素大于插入值，则向后遍历
+
+```c++
+Node* insert(Node* head, int insertVal) {
+	if (head == nullptr) {
+		head = new Node(insertVal);
+		return head->next = head;
+	}
+	Node *start = head;
+	while (start->val <= start->next->val) {
+		start = start->next;
+		if (start == head) break;
+	}
+	Node *p = start->next, *pre = start;
+	while (p->val < insertVal) {
+		if (p != start) {
+			pre = p;
+			p = p->next;
+		}
+		else break;
+	}
+	if (p == start && p->val < insertVal) {
+		pre = p;
+		p = p->next;
+	}
+	pre->next = new Node(insertVal, p);
+	pre->next->next = p;
+	return head;
+}
+```
+
