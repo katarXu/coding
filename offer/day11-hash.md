@@ -55,48 +55,45 @@ bool isAlienSorted(vector<string>& words, string &order) {
 }
 ```
 
-#### [每日温度](https://leetcode-cn.com/problems/iIQa4I/)
 
-请根据每日 `气温` 列表 `temperatures` ，重新生成一个列表，要求其对应位置的输出为：要想观测到更高的气温，至少需要等待的天数。如果气温在这之后都不会升高，请在该位置用 `0` 来代替。
 
- 
+#### [最小时间差](https://leetcode-cn.com/problems/569nqc/)
 
-单调栈
+给定一个 24 小时制（小时:分钟 **"HH:MM"**）的时间列表，找出列表中任意两个时间的最小时间差并以分钟数表示。
 
-逆序：
 
-递减栈，找到右侧比当前元素大的递增序列
 
 ```c++
-vector<int> dailyTemperatures(vector<int>& t) {
-    vector<int> res(t.size());
-    stack<int> s;
-    for(int i = (int)t.size() - 1; i >= 0; --i){
-        while(!s.empty() && t[s.top()] <= t[i])
-            s.pop();
-        res[i] = s.empty() ? 0 : s.top() - i;
-        s.push(i);
+int findMinDifference(vector<string>& timePoints) {
+    vector<bool> arr(1440);
+    for(string &s : timePoints){
+        int tmp = (s[0] - '0') * 600 + (s[1] - '0') * 60 + (s[3] - '0') * 10 + (s[4] - '0');
+        if(arr[tmp]) return 0;
+        arr[tmp] = true;
     }
-    return res;
+    int first = -1, pre = -1, cur = -1, res = 1440;
+    for(int i = 0; i < 1440; ++i){
+        if(arr[i]){
+            if(pre == -1) pre = first = cur = i;
+            else{
+                pre = cur;
+                cur = i;
+                res = min(res, cur - pre);
+            }
+        }
+    }
+    return min(res, 1440 - (cur - first));
 }
 ```
 
-顺序：
 
-递减栈，遇到比栈顶元素大时更新
+
+转换时间也可以这么写：
 
 ```c++
-vector<int> dailyTemperatures(vector<int>& temperatures) {
-    vector<int> ret(temperatures.size(), 0);
-    stack<int> sta;
-    for (int i = 0; i < temperatures.size(); ++i) {
-        while (!sta.empty() && temperatures[sta.top()] < temperatures[i]) {
-            ret[sta.top()] = i - sta.top();
-            sta.pop();
-        }
-        sta.push(i);
-    }
-    return ret;
-    }\
+for (auto t : timePoints)
+    mins.push_back(stoi(t.substr(0, 2)) * 60 + stoi(t.substr(3)));
 ```
+
+
 
