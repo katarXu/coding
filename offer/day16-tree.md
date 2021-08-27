@@ -53,3 +53,35 @@ TreeNode* deserialize(string data) {
 }
 ```
 
+#### [从根节点到叶节点的路径数字之和](https://leetcode-cn.com/problems/3Etpl5/)
+
+给定一个二叉树的根节点 `root` ，树中每个节点都存放有一个 `0` 到 `9` 之间的数字。
+
+每条从根节点到叶节点的路径都代表一个数字：
+
+计算从根节点到叶节点生成的 **所有数字之和** 。
+
+**叶节点** 是指没有子节点的节点。
+
+ 
+
+```c++
+int sumNumbers(TreeNode* root) {
+    int sum = 0;
+    int cur = 0;
+    dfs(root, sum, cur);
+    return sum;   
+}
+
+void dfs(TreeNode *root, int &sum, int &cur){
+    cur = cur * 10 + root->val;
+    if(root->left)
+        dfs(root->left, sum, cur);
+    if(root->right)
+        dfs(root->right, sum, cur);
+    else
+        root->left ? 0 : sum += cur;
+    cur = cur / 10;
+}
+```
+
