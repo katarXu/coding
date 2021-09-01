@@ -21,6 +21,31 @@ int singleNumber(vector<int>& nums) {
 }
 ```
 
+### leecode上的更优解
+
+对某一位具体分析，由于模3有余0、1、2三种情况，故使用两个二进制数$[two,one]$来记录，通过$(00),(01),(10)$表示三进制的0、1、2
+
+先看one，易有`one = (one ^ num) & ~two`
+
+在新one的基础上算two，有`two = (two ^ num) & ~one`（最好是画真值表等方法推导）
+
+最后one是出现1次的，two是出现两次的
+
+```c++
+int singleNumber(vector<int>& nums) {
+	int two = 0, one = 0;
+	for (int &num : nums) {
+		one = (one ^ num) & ~two;
+		two = (two ^ num) & ~one;
+	}
+	return one;
+}
+```
+
+
+
+
+
 #### [单词长度的最大乘积](https://leetcode-cn.com/problems/aseY1I/)
 
 给定一个字符串数组 words，请计算当两个字符串 words[i] 和 words[j] 不包含相同字符时，它们长度的乘积的最大值。假设字符串中只包含英语的小写字母。如果没有不包含相同字符的一对字符串，返回 0。
@@ -58,11 +83,9 @@ int maxProduct(vector<string>& words){
 ```c++
 vector<int> twoSum(vector<int>& numbers, int target) {
     int left = 0, right = (int)numbers.size() - 1;
-    int sum = numbers[left] + numbers[right];
-    while(sum != target){
-        if(sum > target) right--;
+    while(numbers[left] + numbers[right] != target){
+        if(numbers[left] + numbers[right] > target) right--;
         else left++;
-        sum = numbers[left] + numbers[right];
     }
     return vector<int>{left, right};
 }
