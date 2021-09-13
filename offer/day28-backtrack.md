@@ -1,3 +1,36 @@
+#### [含有重复元素集合的组合](https://leetcode-cn.com/problems/4sjJUc/)
+
+给定一个可能有重复数字的整数数组 `candidates` 和一个目标数 `target` ，找出 `candidates` 中所有可以使数字和为 `target` 的组合。
+
+`candidates` 中的每个数字在每个组合中只能使用一次，解集不能包含重复的组合。 
+
+```c++
+vector<vector<int>> res;
+vector<int> cur;
+void dfs(vector<int>& nums, int sum, int i){
+    if(!sum){
+        res.emplace_back(cur);
+        return;
+    }
+    if(i >= nums.size() || sum < nums[i])
+        return;
+    int j = i;
+    while(j < nums.size() && nums[j] == nums[i]) ++j;
+    dfs(nums, sum, j);
+    cur.emplace_back(nums[i]);
+    dfs(nums, sum - nums[i], i + 1);
+    cur.pop_back();
+}
+
+vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+    sort(candidates.begin(), candidates.end());
+    dfs(candidates, target, 0);
+    return res;
+}
+```
+
+
+
 #### [没有重复元素集合的全排列](https://leetcode-cn.com/problems/VvJkup/)
 
 给定一个不含重复数字的整数数组 `nums` ，返回其 **所有可能的全排列** 。可以 **按任意顺序** 返回答案。
